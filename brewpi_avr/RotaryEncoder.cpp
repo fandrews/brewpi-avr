@@ -33,19 +33,19 @@ volatile bool RotaryEncoder::pushFlag=0;
 volatile uint8_t RotaryEncoder::int1Signal=0;
 volatile uint8_t RotaryEncoder::int3Signal=0;
 
-ISR(INT1_vect){
-	#if ROTARY_A != 2
-		#error Review interrupt vectors when not using pin 1 for menu right
-	#endif
-	rotaryEncoder.int1Handler();		
+ISR(PCINT2_vect){
+	rotaryEncoder.int1Handler();
+	rotaryEncoder.int3Handler();
+	// All pins have to move, to not use PD0 and PD1
+	// Add handler for pin rotary switch!
+	/* Might need debounding:
+	if(switch pin low){
+		rotaryEncoder.setPushed();
+	*/
+	/* Not done editing! */
+	#error "Interrupts not set correctly, needs work"
 }
 
-ISR(INT3_vect){
-	#if ROTARY_B != 1
-		#error Review interrupt vectors when not using pin 2 for menu left
-	#endif
-	rotaryEncoder.int3Handler();
-}
 
 ISR(INT2_vect){
 	#if ROTARY_SWITCH != 0
@@ -114,8 +114,10 @@ void RotaryEncoder::init(void){
 	int1Handler(); // call functions ones here for proper initialization
 	int3Handler(); 
 	
-	EICRA |= (1<<ISC21) | (1<<ISC10) | (1<<ISC30);; // any logical change for encoder pins, falling edge for switch
-	EIMSK |= (1<<INT2) | (1<<INT1) | (1<<INT3); // enable interrupts for each pin
+	// EICRA |= (1<<ISC21) | (1<<ISC10) | (1<<ISC30);; // any logical change for encoder pins, falling edge for switch
+	PCICR |= (1<<PCIE2);
+	// EIMSK |= (1<<INT2) | (1<<INT1) | (1<<INT3); // enable interrupts for each pin
+	PCMSK2 |= (1<<PCINT16) | (1<<PCINT17) | (1<<PCINT18);
 }
 
 

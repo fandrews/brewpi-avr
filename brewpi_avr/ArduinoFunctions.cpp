@@ -35,15 +35,15 @@ extern "C"{
 }
 
 // Standard Arduino source files for serial:
-// #include <HardwareSerial.cpp>
+#include <HardwareSerial.cpp>
 
 
 // Arduino Leonardo source files for serial:
-#define USB_VID 0x2341
-#define USB_PID 0x8036
-#include <CDC.cpp>
-#include <USBCore.cpp>
-#include <HID.cpp>
+// #define USB_VID 0x2341
+// #define USB_PID 0x8036
+// #include <CDC.cpp>
+// #include <USBCore.cpp>
+// #include <HID.cpp>
 
 
 // Other source files, depends on your program which you need
